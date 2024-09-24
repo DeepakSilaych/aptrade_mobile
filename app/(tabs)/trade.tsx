@@ -1,8 +1,9 @@
 import { Stack } from "expo-router";
-import { useState } from "react";
-import { View, Text, TouchableOpacity, ScrollView, TextInput, Picker } from "react-native";
+import { useRef, useState } from "react";
+import { View, Text, TouchableOpacity, TextInput, ScrollView, FlatList } from "react-native";
+import { Modalize } from 'react-native-modalize';
+import Animated, { useSharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated';
 
-// Define Trade Type for Orders
 interface Trade {
   price: number;
   amount: number;
@@ -16,7 +17,6 @@ const availableTokens = [
   { symbol: "BNB", name: "Binance Coin", price: 298.85 },
 ];
 
-// Initial Buy Orders (Bids)
 const initialBuyOrders: Trade[] = [
   { price: 63193.50, amount: 1.234, total: 78025.00 },
   { price: 63193.40, amount: 0.567, total: 35850.60 },
@@ -24,7 +24,6 @@ const initialBuyOrders: Trade[] = [
   { price: 63193.10, amount: 0.354, total: 22396.20 },
 ];
 
-// Initial Sell Orders (Asks)
 const initialSellOrders: Trade[] = [
   { price: 63194.00, amount: 0.342, total: 21629.58 },
   { price: 63194.10, amount: 0.765, total: 48355.36 },
@@ -37,8 +36,25 @@ export default function Trade() {
   const [price, setPrice] = useState<string>(availableTokens[0].price.toString());
   const [amount, setAmount] = useState<string>("0.01");
   const [total, setTotal] = useState<string>((parseFloat(price) * parseFloat(amount)).toFixed(2));
+  const [isBuying, setIsBuying] = useState<boolean>(true);
 
-  // Handle token change
+  const modalizeRef = useRef<Modalize>(null);
+
+  const backgroundColor = useSharedValue(isBuying ? 'green' : 'red');
+  const buttonBackgroundColor = useSharedValue(isBuying ? 'green' : 'red');
+
+  const animatedBackgroundStyle = useAnimatedStyle(() => {
+    return {
+      backgroundColor: withTiming(isBuying ? 'green' : 'red', { duration: 300 }),
+    };
+  });
+
+  const animatedButtonStyle = useAnimatedStyle(() => {
+    return {
+      backgroundColor: withTiming(isBuying ? 'green' : 'red', { duration: 300 }),
+    };
+  });
+
   const handleTokenChange = (tokenSymbol: string) => {
     const token = availableTokens.find(t => t.symbol === tokenSymbol);
     if (token) {
@@ -46,46 +62,69 @@ export default function Trade() {
       setPrice(token.price.toString());
       setTotal((token.price * parseFloat(amount)).toFixed(2));
     }
+    modalizeRef.current?.close();
   };
 
-  // Handle amount change
   const handleAmountChange = (newAmount: string) => {
     setAmount(newAmount);
     setTotal((parseFloat(price) * parseFloat(newAmount)).toFixed(2));
   };
 
-  // Handle price change (if allowed)
   const handlePriceChange = (newPrice: string) => {
     setPrice(newPrice);
     setTotal((parseFloat(newPrice) * parseFloat(amount)).toFixed(2));
   };
 
-  const handleBuy = () => {
-    console.log(`Buying ${amount} ${selectedToken} at $${price}`);
+  const handleTradeAction = () => {
+    const action = isBuying ? "Buying" : "Selling";
+    console.log(`${action} ${amount} ${selectedToken} at $${price}`);
+  };
+
+  const toggleBuySell = (buying: boolean) => {
+    setIsBuying(buying);
+    backgroundColor.value = withTiming(buying ? 'green' : 'red', { duration: 300 });
+    buttonBackgroundColor.value = withTiming(buying ? 'green' : 'red', { duration: 300 });
+  };
+
+  const openTokenSelector = () => {
+    modalizeRef.current?.open();
   };
 
   return (
     <>
       <Stack.Screen />
       <View className="flex-1 bg-slate-900 p-4">
-        <View className="mt-4 flex-row justify-between items-center">
-          <Text className="text-white text-xl font-bold">{selectedToken}/USDT</Text>
-        </View>
-        <Text className="text-gray-400 text-sm mb-4">Current Price: ${price}</Text>
 
-        {/* Token Picker */}
-        <View className="flex-row items-center mb-4">
-          <Text className="text-white text-lg mr-2">Select Token:</Text>
-          <Picker
-            selectedValue={selectedToken}
-            style={{ height: 50, width: 150, color: "white" }}
-            onValueChange={(itemValue) => handleTokenChange(itemValue)}
-            className="bg-gray-800 p-2 rounded-lg"
+        {/* Token Picker with Bottom Sheet */}
+        <View className="mt-4 flex-row justify-between items-center">
+          <TouchableOpacity onPress={openTokenSelector}>
+            <Text className="text-white text-xl font-bold">
+              {selectedToken} / USDT ▼
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        <Text className="text-gray-400 text-sm mb-4">${price}</Text>
+
+
+        {/* Buy/Sell Segmented Control with Animation */}
+        <View className="flex-row justify-between mb-4">
+          <TouchableOpacity
+            onPress={() => toggleBuySell(true)}
+            className={`flex-1 p-3 rounded-l-lg ${isBuying ? "bg-green-500" : "bg-gray-700"}`}
           >
-            {availableTokens.map((token) => (
-              <Picker.Item key={token.symbol} label={token.name} value={token.symbol} />
-            ))}
-          </Picker>
+            <Text className={`text-center ${isBuying ? "text-black font-bold" : "text-white"}`}>
+              Buy
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => toggleBuySell(false)}
+            className={`flex-1 p-3 rounded-r-lg ${!isBuying ? "bg-red-500" : "bg-gray-700"}`}
+          >
+            <Text className={`text-center ${!isBuying ? "text-black font-bold" : "text-white"}`}>
+              Sell
+            </Text>
+          </TouchableOpacity>
         </View>
 
         {/* Price Input */}
@@ -116,13 +155,18 @@ export default function Trade() {
           <Text className="text-white text-lg font-bold">$ {total}</Text>
         </View>
 
-        {/* Buy Button */}
-        <TouchableOpacity
-          onPress={handleBuy}
-          className="p-4 bg-yellow-500 rounded-full mt-4"
-        >
-          <Text className="text-center text-black font-semibold">Buy {selectedToken}</Text>
-        </TouchableOpacity>
+
+        {/* Animated Trade Action Button */}
+        <Animated.View style={[animatedButtonStyle, { borderRadius: 30, overflow: 'hidden' }]}>
+          <TouchableOpacity
+            onPress={handleTradeAction}
+            className="p-4"
+          >
+            <Text className="text-center text-black font-semibold">
+              {isBuying ? `Buy ${selectedToken}` : `Sell ${selectedToken}`}
+            </Text>
+          </TouchableOpacity>
+        </Animated.View>
 
         {/* Order Book */}
         <View className="mt-6">
@@ -136,9 +180,9 @@ export default function Trade() {
                 key={index}
                 className="flex-row justify-between items-center p-2 bg-gray-900 rounded-lg mt-2"
               >
-                <Text className="text-green-400">${order.price.toFixed(2)}</Text>
-                <Text className="text-gray-400">{order.amount.toFixed(5)} {selectedToken}</Text>
-                <Text className="text-green-400">${order.total.toFixed(2)}</Text>
+                <Text className="text-green-400">${order.price}</Text>
+                <Text className="text-white">{order.amount}</Text>
+                <Text className="text-white">{order.total}</Text>
               </View>
             ))}
           </ScrollView>
@@ -151,13 +195,29 @@ export default function Trade() {
                 key={index}
                 className="flex-row justify-between items-center p-2 bg-gray-900 rounded-lg mt-2"
               >
-                <Text className="text-red-400">${order.price.toFixed(2)}</Text>
-                <Text className="text-gray-400">{order.amount.toFixed(5)} {selectedToken}</Text>
-                <Text className="text-red-400">${order.total.toFixed(2)}</Text>
+                <Text className="text-red-400">${order.price}</Text>
+                <Text className="text-white">{order.amount}</Text>
+                <Text className="text-white">{order.total}</Text>
               </View>
             ))}
           </ScrollView>
         </View>
+
+        {/* Bottom Sheet Modal for Token Selection */}
+        <Modalize ref={modalizeRef} adjustToContentHeight={true}>
+          <View className="p-4 bg-gray-800">
+            <Text className="text-white text-lg font-semibold mb-4">Select a Token</Text>
+            {availableTokens.map((token, index) => (
+              <TouchableOpacity
+                key={index}
+                onPress={() => handleTokenChange(token.symbol)}
+                className="p-4 bg-gray-900 rounded-lg mb-2"
+              >
+                <Text className="text-white">{token.name} ({token.symbol}) - ${token.price}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </Modalize>
       </View>
     </>
   );
