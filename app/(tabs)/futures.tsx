@@ -36,18 +36,10 @@ export default function Trade() {
   const [price, setPrice] = useState<string>(availableTokens[0].price.toString());
   const [amount, setAmount] = useState<string>("0.01");
   const [total, setTotal] = useState<string>((parseFloat(price) * parseFloat(amount)).toFixed(2));
-  const [isBuying, setIsBuying] = useState<boolean>(true);
-  const [isLong, setIsLong] = useState<boolean>(true); // New state for long/short
+  const [isLong, setIsLong] = useState<boolean>(true); // State for long/short
+  const [showChart, setShowChart] = useState<boolean>(false); // State for showing chart
 
   const modalizeRef = useRef<Modalize>(null);
-
-  const backgroundColor = useSharedValue(isBuying ? 'green' : 'red');
-
-  const animatedBackgroundStyle = useAnimatedStyle(() => {
-    return {
-      backgroundColor: withTiming(isBuying ? 'green' : 'red', { duration: 300 }),
-    };
-  });
 
   const handleTokenChange = (tokenSymbol: string) => {
     const token = availableTokens.find(t => t.symbol === tokenSymbol);
@@ -70,12 +62,8 @@ export default function Trade() {
   };
 
   const handleTradeAction = () => {
-    const action = isBuying ? (isLong ? "Long" : "Short") : (isLong ? "Closing Long" : "Closing Short");
+    const action = isLong ? "Long" : "Short";
     console.log(`${action} ${amount} ${selectedToken} at $${price}`);
-  };
-
-  const toggleBuySell = (buying: boolean) => {
-    setIsBuying(buying);
   };
 
   const toggleLongShort = (long: boolean) => {
@@ -84,6 +72,10 @@ export default function Trade() {
 
   const openTokenSelector = () => {
     modalizeRef.current?.open();
+  };
+
+  const toggleChart = () => {
+    setShowChart(!showChart);
   };
 
   return (
@@ -101,26 +93,6 @@ export default function Trade() {
         </View>
 
         <Text className="text-gray-400 text-sm mb-4">${price}</Text>
-
-        {/* Buy/Sell Segmented Control with Animation */}
-        <View className="flex-row justify-between mb-4">
-          <TouchableOpacity
-            onPress={() => toggleBuySell(true)}
-            className={`flex-1 p-3 rounded-l-lg ${isBuying ? "bg-green-500" : "bg-gray-700"}`}
-          >
-            <Text className={`text-center ${isBuying ? "text-black font-bold" : "text-white"}`}>
-              Buy
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => toggleBuySell(false)}
-            className={`flex-1 p-3 rounded-r-lg ${!isBuying ? "bg-red-500" : "bg-gray-700"}`}
-          >
-            <Text className={`text-center ${!isBuying ? "text-black font-bold" : "text-white"}`}>
-              Sell
-            </Text>
-          </TouchableOpacity>
-        </View>
 
         {/* Long/Short Segmented Control */}
         <View className="flex-row justify-between mb-4">
@@ -170,24 +142,39 @@ export default function Trade() {
           <Text className="text-white text-lg font-bold">$ {total}</Text>
         </View>
 
-        {/* Animated Trade Action Button */}
-        <Animated.View style={[{ borderRadius: 30, overflow: 'hidden' }]}>
-          <TouchableOpacity
-            onPress={handleTradeAction}
-            className="p-4"
-            style={{ backgroundColor: isBuying ? (isLong ? 'blue' : 'orange') : (isLong ? 'red' : 'darkred') }}
-          >
-            <Text className="text-center text-black font-semibold">
-              {isBuying ? (isLong ? `Long ${selectedToken}` : `Short ${selectedToken}`) : (isLong ? `Close Long ${selectedToken}` : `Close Short ${selectedToken}`)}
-            </Text>
-          </TouchableOpacity>
-        </Animated.View>
+        {/* Trade Action Button */}
+        <TouchableOpacity
+          onPress={handleTradeAction}
+          className={`p-4 ${isLong ? "bg-blue-600" : "bg-orange-600"} rounded-lg`}
+        >
+          <Text className="text-center text-white font-semibold">
+            {isLong ? `Long ${selectedToken}` : `Short ${selectedToken}`}
+          </Text>
+        </TouchableOpacity>
+
+        {/* Chart Toggle Button */}
+        <TouchableOpacity
+          onPress={toggleChart}
+          className="mt-4 p-3 bg-green-600 rounded-lg"
+        >
+          <Text className="text-center text-white font-semibold">
+            {showChart ? "Hide Chart" : "Show Chart"}
+          </Text>
+        </TouchableOpacity>
+
+        {/* Chart Display */}
+        {showChart && (
+          <View className="mt-6 p-4 bg-gray-800 rounded-lg">
+            <Text className="text-white text-lg font-semibold">Chart Placeholder</Text>
+            {/* You can replace the below with a chart library/component */}
+            <View className="h-32 bg-gray-600 rounded-lg mt-2" />
+          </View>
+        )}
 
         {/* Order Book */}
-        <View className="mt-6">
+        {/* <View className="mt-6">
           <Text className="text-white text-lg font-semibold mb-2">Order Book</Text>
 
-          {/* Buy Orders (Bids) */}
           <Text className="text-green-400 text-base mb-1">Buy Orders (Bids)</Text>
           <ScrollView className="bg-gray-800 rounded-lg p-2 mb-4">
             {initialBuyOrders.map((order, index) => (
@@ -202,7 +189,6 @@ export default function Trade() {
             ))}
           </ScrollView>
 
-          {/* Sell Orders (Asks) */}
           <Text className="text-red-400 text-base mb-1">Sell Orders (Asks)</Text>
           <ScrollView className="bg-gray-800 rounded-lg p-2">
             {initialSellOrders.map((order, index) => (
@@ -216,20 +202,19 @@ export default function Trade() {
               </View>
             ))}
           </ScrollView>
-        </View>
+        </View> */}
 
         {/* Token Selector Modal */}
         <Modalize ref={modalizeRef}>
           <View className="p-4">
-            <Text className="text-white text-lg font-semibold">Select a Token</Text>
+            <Text className="text-lg font-bold mb-4">Select a Token</Text>
             {availableTokens.map((token) => (
               <TouchableOpacity
                 key={token.symbol}
                 onPress={() => handleTokenChange(token.symbol)}
-                className="flex-row justify-between items-center p-3 bg-gray-800 rounded-lg my-2"
+                className="p-2 mb-2 bg-gray-800 rounded-lg"
               >
-                <Text className="text-white">{token.name}</Text>
-                <Text className="text-white">${token.price}</Text>
+                <Text className="text-white">{token.name} ({token.symbol})</Text>
               </TouchableOpacity>
             ))}
           </View>
