@@ -83,6 +83,9 @@ importers:
       lodash.memoize:
         specifier: ^4.1.2
         version: 4.1.2
+      lucide-react-native:
+        specifier: ^0.445.0
+        version: 0.445.0(react-native-svg@15.2.0(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0))(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)
       moti:
         specifier: ^0.29.0
         version: 0.29.0(react-dom@18.2.0(react@18.2.0))(react-native-reanimated@3.10.1(@babel/core@7.25.2)(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0))(react@18.2.0)
@@ -107,6 +110,9 @@ importers:
       react-native:
         specifier: 0.74.5
         version: 0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)
+      react-native-element-dropdown:
+        specifier: ^2.12.1
+        version: 2.12.1(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)
       react-native-flash-message:
         specifier: ^0.4.2
         version: 0.4.2(prop-types@15.8.1)(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)
@@ -5174,6 +5180,13 @@ packages:
     resolution: {integrity: sha512-Jo6dJ04CmSjuznwJSS3pUeWmd/H0ffTlkXXgwZi+eq1UCmqQwCh+eLsYOYCwY991i2Fah4h1BEMCx4qThGbsiA==}
     engines: {node: '>=10'}
 
+  lucide-react-native@0.445.0:
+    resolution: {integrity: sha512-eq9TUmrw3d2xFRWJJToTLA3MS78w09yC8m2sxhkGN95fvnyYZpq3IGI0frOhWexFrVtxTBGdD8SiknkQ/6eCjw==}
+    peerDependencies:
+      react: ^16.5.1 || ^17.0.0 || ^18.0.0
+      react-native: '*'
+      react-native-svg: ^12.0.0 || ^13.0.0 || ^14.0.0 || ^15.0.0
+
   make-dir@2.1.0:
     resolution: {integrity: sha512-LS9X+dc8KLxXCb8dni79fLIIUA5VyZoyjSMCwTluaXA0o27cCK0bhXkpgw+sTXVpPy/lSO57ilRixqk0vDmtRA==}
     engines: {node: '>=6'}
@@ -6114,6 +6127,13 @@ packages:
         optional: true
       react-native-svg:
         optional: true
+
+  react-native-element-dropdown@2.12.1:
+    resolution: {integrity: sha512-Z3uWNFBoezDEsy9AZJxoDc9DxoAdfeprUjaInmbuzYOk6R0Y0UZ659JIalX20XNvrNRWJUfSZwbM94jWYNsIyw==}
+    engines: {node: '>= 16.0.0'}
+    peerDependencies:
+      react: '*'
+      react-native: '*'
 
   react-native-flash-message@0.4.2:
     resolution: {integrity: sha512-YvdXRW9AGMTI99S3DJZhLO0mbk/ehKv/UQf4/Df+3dtGi8DlkidRbyqCQZk1WMtZ7rN85PMTGr/xEI9CF9z0YA==}
@@ -14023,6 +14043,12 @@ snapshots:
     dependencies:
       yallist: 4.0.0
 
+  lucide-react-native@0.445.0(react-native-svg@15.2.0(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0))(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0):
+    dependencies:
+      react: 18.2.0
+      react-native: 0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)
+      react-native-svg: 15.2.0(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)
+
   make-dir@2.1.0:
     dependencies:
       pify: 4.0.1
@@ -15057,6 +15083,12 @@ snapshots:
     transitivePeerDependencies:
       - '@babel/core'
       - supports-color
+
+  react-native-element-dropdown@2.12.1(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0):
+    dependencies:
+      lodash: 4.17.21
+      react: 18.2.0
+      react-native: 0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0)
 
   react-native-flash-message@0.4.2(prop-types@15.8.1)(react-native@0.74.5(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0):
     dependencies:

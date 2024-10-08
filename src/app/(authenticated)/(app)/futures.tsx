@@ -5,7 +5,7 @@ import { useAuth } from "@/core";
 import { SubmitButton } from "@/ui";
 
 
-export default function ProfileScreen() {
+export default function FuturesScreen() {
 
   const {signOut} = useAuth();
 

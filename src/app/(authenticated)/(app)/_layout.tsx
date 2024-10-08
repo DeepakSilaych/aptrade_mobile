@@ -43,19 +43,19 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="lobby"
+        name="trade"
           options={{
-            title: 'Lobby',
-            tabBarTestID: 'lobby-tab',
+            title: 'Trade',
+            tabBarTestID: 'trade-tab',
             headerShown: false,
             // header: () => <Header />,
           }}
         />
       <Tabs.Screen
-        name="profile"
+        name="futures"
         options={{
-          title: 'Profile',
-          tabBarTestID: 'profile-tab',
+          title: 'Futures',
+          tabBarTestID: 'futures-tab',
           headerShown: false,
           // header: () => <Header />,
         }}

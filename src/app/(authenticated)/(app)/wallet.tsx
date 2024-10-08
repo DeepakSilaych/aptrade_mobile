@@ -1,10 +1,9 @@
 import { useState } from "react";
-import React from "react";
 import { Image, ScrollView, StyleSheet,Text, TouchableOpacity, View } from "react-native";
 
 import { Layout } from "@/components/layout";
 
-// Define the cryptocurrency typex
+// Define the cryptocurrency type
 interface Crypto {
   symbol: string;
   name: string;

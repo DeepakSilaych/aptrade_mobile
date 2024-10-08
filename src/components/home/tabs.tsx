@@ -238,35 +238,35 @@ export default function Tabs() {
 const Tab = ({index}: {index: number}) => {
   if(index === 0){
     return (
-      <View style={{height:'50%'}}>
+      <View style={{height:'50%', backgroundColor:'red'}}>
         <Text>{index}</Text>
       </View>
     )
   }
   if(index === 1){
     return (
-      <View style={{height:'50%'}}>
+      <View style={{height:'50%', backgroundColor:'green'}}>
         <Text>{index}</Text>
       </View>
     )
   }
   if(index === 2){
     return (
-      <View style={{height:'50%'}}>
+      <View style={{height:'50%', backgroundColor:'blue'}}>
         <Text>{index}</Text>
       </View>
     )
   }
   if(index === 3){
     return (
-      <View style={{height:'50%'}}>
+      <View style={{height:'50%', backgroundColor:'red' }}>
         <Text>{index}</Text>
       </View>
     )
   }
   if(index === 4){
     return (
-      <View style={{height:'50%'}}>
+      <View style={{height:'50%', backgroundColor:'red'}}>
         <Text>{index}</Text>
       </View>
     )
